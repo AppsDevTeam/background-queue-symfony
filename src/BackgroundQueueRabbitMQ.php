@@ -39,7 +39,7 @@ class BackgroundQueueRabbitMQ
 	/**
 	 * @throws Exception
 	 */
-	public function process(AMQPMessage $message): bool
+	public function execute(AMQPMessage $message): bool
 	{
 		$body = $message->getBody();
 
@@ -55,7 +55,7 @@ class BackgroundQueueRabbitMQ
 
 	private function doPublish($producer, $id)
 	{
-		$this->getProducer($producer)->publish(self::NOOP);
+		$this->getProducer($producer)->publish($id);
 	}
 
 	private function getProducer($producer)
