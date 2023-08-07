@@ -1,0 +1,25 @@
+{
+	"name": "adt/background-queue-symfony",
+	"type": "library",
+	"keywords": ["symfony", "rabbitmq", "background-queue"],
+	"authors": [
+		{
+			"name": "Apps Dev Team",
+			"homepage": "https://www.appsdevteam.com",
+			"email": "hello@appsdevteam.com"
+		}
+	],
+	"description": "Background queue for Symfony using RabbitMQ.",
+	"license": "MIT",
+	"require": {
+		"php": "^7.4|^8.0",
+		"adt/background-queue": "^4.0",
+		"php-amqplib/rabbitmq-bundle": "^2.5",
+		"symfony/framework-bundle": "^4.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"ADT\\BackgroundQueue\\": "src"
+		}
+	}
+}

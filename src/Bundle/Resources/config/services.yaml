@@ -1,0 +1,13 @@
+services:
+    ADT\BackgroundQueue\BackgroundQueue:
+        arguments:
+            $config: '%background_queue%'
+    ADT\BackgroundQueue\Console\ClearFinishedCommand:
+        tags:
+            - { name: 'console.command' }
+    ADT\BackgroundQueue\Console\ProcessCommand:
+        tags:
+            - { name: 'console.command' }
+    ADT\BackgroundQueue\Console\UpdateSchemaCommand:
+        tags:
+            - { name: 'console.command' }
