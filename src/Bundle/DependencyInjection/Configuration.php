@@ -46,6 +46,9 @@ class Configuration implements ConfigurationInterface
 				->scalarNode('amqpWaitingProducerName')
 					->defaultNull()
 				->end()
+				->scalarNode('logger')
+					->defaultNull()
+				->end()
 			->end();
 
 		return $treeBuilder;

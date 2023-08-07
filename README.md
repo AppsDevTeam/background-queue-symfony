@@ -25,6 +25,7 @@ background_queue:
 	connection: %database% # parametry predavane do Doctrine\Dbal\Connection
 	amqpPublishCallback: ['@ADT\BackgroundQueue\BackgroundQueueRabbitMQ', 'publish'] # nepovinné, callback, který publishne zprávu do brokera
 	amqpWaitingQueueName: 'waiting' # nepovinné, název queue, kam ukládat záznamy, které ještě nelze zpracovat
+    logger: '@logger'
 ```
 
 ```neon

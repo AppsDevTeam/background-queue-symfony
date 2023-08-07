@@ -27,7 +27,10 @@ class BackgroundQueueExtension extends Extension
 			$callback[0] = new Reference(substr($callback[0], 1)); // removes @;
 		}
 		if ($config['amqpPublishCallback']) {
-			$config['amqpPublishCallback'][0] =  new Reference(substr($config['amqpPublishCallback'][0], 1)); // removes @;
+			$config['amqpPublishCallback'][0] = new Reference(substr($config['amqpPublishCallback'][0], 1)); // removes @;
+		}
+		if ($config['logger']) {
+			$config['logger'] = new Reference(substr($config['logger'], 1)); // removes @;
 		}
 
 		$definition = new Definition('ADT\BackgroundQueue\BackgroundQueue', [$config]);
