@@ -1,7 +1,19 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
     ADT\BackgroundQueue\BackgroundQueue:
+        lazy: true
         arguments:
             $config: '%background_queue%'
+
+    ADT\BackgroundQueue\BackgroundQueueRabbitMQ:
+        lazy: true
+        arguments:
+            $container: '@service_container'
+
     ADT\BackgroundQueue\Console\ClearFinishedCommand:
         tags:
             - { name: 'console.command' }

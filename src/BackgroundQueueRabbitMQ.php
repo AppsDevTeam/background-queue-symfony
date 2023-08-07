@@ -5,8 +5,7 @@ namespace ADT\BackgroundQueue;
 use Exception;
 use OldSound\RabbitMqBundle\RabbitMq\Producer;
 use PhpAmqpLib\Message\AMQPMessage;
-use Tracy\Debugger;
-use Tracy\ILogger;
+use Symfony\Component\DependencyInjection\Container;
 
 class BackgroundQueueRabbitMQ
 {
@@ -14,28 +13,27 @@ class BackgroundQueueRabbitMQ
 
 	const PRODUCER_GENERAL = 'general';
 
-	private Producer $connection;
+	private Container $container;
 
 	private BackgroundQueue $backgroundQueue;
 
-	public function __construct(AbstractConnection $connection, BackgroundQueue $backgroundQueue)
+	/** @var Producer[] */
+	private array $producers = [];
+
+	public function __construct(Container $container, BackgroundQueue $backgroundQueue)
 	{
-		$this->connection = $connection;
+		$this->container = $container;
 		$this->backgroundQueue = $backgroundQueue;
 	}
 
 	public function publish(int $id, ?string $producer = null): void
 	{
-		$this->connection->getConnection()getProducer($producer ?: self::PRODUCER_GENERAL)->publish($id);
+		$this->doPublish($producer ?: self::PRODUCER_GENERAL, $id);
 	}
 
 	public function publishNoop(): void
 	{
-		try {
-			$this->connection->getProducer(self::PRODUCER_GENERAL)->publish(self::NOOP);
-		} catch (Exception $e) {
-			Debugger::log($e, ILogger::EXCEPTION);
-		}
+		$this->doPublish(self::PRODUCER_GENERAL, self::NOOP);
 	}
 
 	/**
@@ -53,5 +51,24 @@ class BackgroundQueueRabbitMQ
 
 		// vždy označit zprávu jako provedenou (smazat ji z rabbit DB)
 		return true;
+	}
+
+	private function doPublish($producer, $id)
+	{
+		$this->getProducer($producer)->publish(self::NOOP);
+	}
+
+	private function getProducer($producer)
+	{
+		if (!$this->producers) {
+			foreach ($this->container->getServiceIds() as $serviceId) {
+				if (strpos($serviceId, 'old_sound_rabbit_mq.') === 0 && strpos($serviceId, '_producer') !== false) {
+					$index = str_replace(['old_sound_rabbit_mq.', '_producer'], '', $serviceId);
+					$this->producers[$index] = $this->container->get($serviceId);
+				}
+			}
+		}
+
+		return $this->producers[$producer];
 	}
 }
