@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BackgroundQueue\Bundle\DependencyInjection;
+namespace ADT\BackgroundQueue\Bundle\DependencyInjection;
 
 use Exception;
 use Symfony\Component\Config\FileLocator;

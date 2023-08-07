@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BackgroundQueue\Bundle;
+namespace ADT\BackgroundQueue\Bundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
