@@ -10,7 +10,7 @@ composer require adt/background-queue-symfony
 
 ```php
 return [
-  ADT\BackgroundQueueSymfony\Bundle\BackgroundQueueBundle::class => ['all' => true]
+    ADT\BackgroundQueueSymfony\Bundle\BackgroundQueueBundle::class => ['all' => true]
 ];
 ```
 
@@ -51,7 +51,7 @@ This make sures you avoid BC break when upgrading `php-amqplib/rabbitmq-bundle` 
 
 ```php
 return [
-	OldSound\RabbitMqBundle\OldSoundRabbitMqBundle::class => ['all' => true]
+    OldSound\RabbitMqBundle\OldSoundRabbitMqBundle::class => ['all' => true]
 ];
 ```
 
