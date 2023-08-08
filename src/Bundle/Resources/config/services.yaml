@@ -9,7 +9,10 @@ services:
         arguments:
             $config: '%background_queue%'
 
-    ADT\BackgroundQueue\BackgroundQueueRabbitMQ:
+    ADT\BackgroundQueueSymfony\Broker\Consumer:
+        lazy: true
+
+    ADT\BackgroundQueueSymfony\Broker\Producer:
         lazy: true
         arguments:
             $container: '@service_container'
@@ -18,6 +21,9 @@ services:
         tags:
             - { name: 'console.command' }
     ADT\BackgroundQueue\Console\ProcessCommand:
+        tags:
+            - { name: 'console.command' }
+    ADT\BackgroundQueue\Console\ReloadConsumersCommand:
         tags:
             - { name: 'console.command' }
     ADT\BackgroundQueue\Console\UpdateSchemaCommand:

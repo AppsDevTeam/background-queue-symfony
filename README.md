@@ -10,22 +10,21 @@ composer require adt/background-queue-symfony
 
 ```php
 return [
-	ADT\BackgroundQueue\Bundle\BackgroundQueueBundle::class => ['all' => true]
+	ADT\BackgroundQueueSymfony\Bundle\BackgroundQueueBundle::class => ['all' => true]
 ];
 ```
 
-```neon
+```yaml
 background_queue:
 	callbacks:
-		sendEmail: [@App\Model\Mailer, sendEmail]
-		...
+		sendEmail: ['@App\Model\Mailer', 'sendEmail']
 	notifyOnNumberOfAttempts: 5 # počet pokusů o zpracování záznamu před zalogováním
 	tempDir: %tempDir% # cesta pro uložení zámku proti vícenásobnému spuštění commandu
 	queue: general # nepovinné, název fronty, do které se ukládají a ze které se vybírají záznamy
 	connection: %database% # parametry predavane do Doctrine\Dbal\Connection
-	amqpPublishCallback: ['@ADT\BackgroundQueue\BackgroundQueueRabbitMQ', 'publish'] # nepovinné, callback, který publishne zprávu do brokera
-	amqpWaitingQueueName: 'waiting' # nepovinné, název queue, kam ukládat záznamy, které ještě nelze zpracovat
-    logger: '@logger'
+	producer: '@ADT\BackgroundQueueSymfony\Broker\Producer' # nepovinné, callback, který publishne zprávu do brokera
+	waitingQueue: 'waiting' # nepovinné, název queue, kam ukládat záznamy, které ještě nelze zpracovat
+	logger: '@logger'
 ```
 
 ```neon
@@ -48,9 +47,9 @@ old_sound_rabbit_mq:
   consumers:
     general:
       connection: default
-      exchange_options: {name: '%env(RABBITMQ_NAME)%, type: direct}
+      exchange_options: {name: '%env(RABBITMQ_NAME)%', type: direct}
       queue_options: {name: '%env(RABBITMQ_NAME)%', arguments: {'x-queue-type': ['S', 'quorum']}}
-      callback: ADT\BackgroundQueue\BackgroundQueueRabbitMQ
+      callback: ADT\BackgroundQueueSymfony\Broker\Consumer
       # Consumery máme nastavené tak, že zpracují max 1 zprávu, takže nastavíme,
       # aby si jich více nezabíral.
       qos_options: {prefetch_count: 1}
@@ -59,7 +58,7 @@ old_sound_rabbit_mq:
         connection: default
         exchange_options: {name: '%env(RABBITMQ_NAME)%', type: direct}
         queue_options: {name: '%env(RABBITMQ_NAME)%', arguments: {'x-queue-type': ['S', 'quorum']}}
-        callback: ADT\BackgroundQueue\BackgroundQueueRabbitMQ
+        callback: ADT\BackgroundQueueSymfony\Broker\Consumer
         # Consumery máme nastavené tak, že zpracují max 1 zprávu, takže nastavíme,
         # aby si jich více nezabíral.
         qos_options: {prefetch_count: 1}

@@ -1,13 +1,11 @@
 <?php
 
-namespace ADT\BackgroundQueue;
+namespace ADT\BackgroundQueueSymfony\Broker;
 
 use Exception;
-use OldSound\RabbitMqBundle\RabbitMq\Producer;
-use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Component\DependencyInjection\Container;
 
-class BackgroundQueueRabbitMQ
+class Producer implements \ADT\BackgroundQueue\Broker\Producer
 {
 	const NOOP = 'noop';
 
@@ -15,22 +13,25 @@ class BackgroundQueueRabbitMQ
 
 	private Container $container;
 
-	private BackgroundQueue $backgroundQueue;
-
 	/** @var Producer[] */
 	private array $producers = [];
 
-	public function __construct(Container $container, BackgroundQueue $backgroundQueue)
+	public function __construct(Container $container)
 	{
 		$this->container = $container;
-		$this->backgroundQueue = $backgroundQueue;
 	}
 
-	public function publish(int $id, ?string $producer = null): void
+	/**
+	 * @throws Exception
+	 */
+	public function publish(int $id, ?string $queue = null): void
 	{
-		$this->doPublish($producer ?: self::PRODUCER_GENERAL, $id);
+		$this->doPublish($queue ?: self::PRODUCER_GENERAL, $id);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function publishNoop(): void
 	{
 		$this->doPublish(self::PRODUCER_GENERAL, self::NOOP);
@@ -39,25 +40,14 @@ class BackgroundQueueRabbitMQ
 	/**
 	 * @throws Exception
 	 */
-	public function execute(AMQPMessage $message): bool
-	{
-		$body = $message->getBody();
-
-		if ($body === self::NOOP) {
-			return true;
-		}
-
-		$this->backgroundQueue->process((int) $body);
-
-		// vždy označit zprávu jako provedenou (smazat ji z rabbit DB)
-		return true;
-	}
-
 	private function doPublish($producer, $id)
 	{
 		$this->getProducer($producer)->publish($id);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	private function getProducer($producer)
 	{
 		if (!$this->producers) {

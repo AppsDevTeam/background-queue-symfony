@@ -1,6 +1,6 @@
 <?php
 
-namespace ADT\BackgroundQueue\Bundle\DependencyInjection;
+namespace ADT\BackgroundQueueSymfony\Bundle\DependencyInjection;
 
 use Exception;
 use Symfony\Component\Config\FileLocator;
@@ -34,6 +34,9 @@ class BackgroundQueueExtension extends Extension
 		}
 
 		$definition = new Definition('ADT\BackgroundQueue\BackgroundQueue', [$config]);
+		$container->setDefinition('ADT\BackgroundQueue\BackgroundQueue', $definition);
+
+		$definition = new Definition('ADT\BackgroundQueueNette\BackgroundQueue', [$config]);
 		$container->setDefinition('ADT\BackgroundQueue\BackgroundQueue', $definition);
 	}
 }
