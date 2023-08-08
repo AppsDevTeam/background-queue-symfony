@@ -10,19 +10,19 @@ composer require adt/background-queue-symfony
 
 ```php
 return [
-	ADT\BackgroundQueueSymfony\Bundle\BackgroundQueueBundle::class => ['all' => true]
+  ADT\BackgroundQueueSymfony\Bundle\BackgroundQueueBundle::class => ['all' => true]
 ];
 ```
 
 ```yaml
 background_queue:
-	callbacks:
-		sendEmail: ['@App\Model\Mailer', 'sendEmail']
-	notifyOnNumberOfAttempts: 5
-	tempDir: %tempDir%
-	connection: %database%
-	queue: general
-	logger: '@logger'
+  callbacks:
+    sendEmail: ['@App\Model\Mailer', 'sendEmail']
+  notifyOnNumberOfAttempts: 5
+  tempDir: %tempDir%
+  connection: %database%
+  queue: general
+  logger: '@logger'
 ```
 
 ## 1.3 RabbitMQ (optional)
@@ -59,8 +59,8 @@ This line must be after `BackgroundQueueBundle` line.
 
 ```yaml
 background_queue:
-	producer: '@ADT\BackgroundQueueSymfony\Broker\Producer'
-	waitingQueue: 'waiting'
+  producer: '@ADT\BackgroundQueueSymfony\Broker\Producer'
+  waitingQueue: 'waiting'
 ```
 
 ```yaml
