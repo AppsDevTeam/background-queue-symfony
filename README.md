@@ -29,11 +29,7 @@ background_queue:
 
 ### 1.3.1 Installation
 
-```
-composer require php-amqplib/rabbitmq-bundle
-```
-
-To make sure you avoid BC break when upgrading `php-amqplib/rabbitmq-bundle` in the future, add to your composer:
+Because RabbitMQ is optional dependency, it doesn't check your installed version against the version with which this package was tested. That's why it's recommended to add
 
 ```json
 {
@@ -42,6 +38,14 @@ To make sure you avoid BC break when upgrading `php-amqplib/rabbitmq-bundle` in 
   }
 }
 ```
+
+to your composer and then run:
+
+```
+composer require php-amqplib/rabbitmq-bundle
+```
+
+This make sures you avoid BC break when upgrading `php-amqplib/rabbitmq-bundle` in the future.
 
 ### 1.3.2 Configuration
 
