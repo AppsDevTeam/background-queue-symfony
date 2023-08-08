@@ -26,17 +26,16 @@ class BackgroundQueueExtension extends Extension
 		foreach ($config['callbacks'] as &$callback) {
 			$callback[0] = new Reference(substr($callback[0], 1)); // removes @;
 		}
-		if ($config['amqpPublishCallback']) {
-			$config['amqpPublishCallback'][0] = new Reference(substr($config['amqpPublishCallback'][0], 1)); // removes @;
+		if ($config['producer']) {
+			$config['producer'] = new Reference(substr($config['producer'], 1)); // removes @;
+			$loader->load('broker.yml');
+
 		}
 		if ($config['logger']) {
 			$config['logger'] = new Reference(substr($config['logger'], 1)); // removes @;
 		}
 
 		$definition = new Definition('ADT\BackgroundQueue\BackgroundQueue', [$config]);
-		$container->setDefinition('ADT\BackgroundQueue\BackgroundQueue', $definition);
-
-		$definition = new Definition('ADT\BackgroundQueueNette\BackgroundQueue', [$config]);
 		$container->setDefinition('ADT\BackgroundQueue\BackgroundQueue', $definition);
 	}
 }

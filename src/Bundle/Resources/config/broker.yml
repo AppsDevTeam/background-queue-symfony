@@ -1,0 +1,18 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    ADT\BackgroundQueueSymfony\Broker\Consumer:
+        lazy: true
+
+    ADT\BackgroundQueue\Broker\Producer: '@ADT\BackgroundQueueSymfony\Broker\Producer'
+    ADT\BackgroundQueueSymfony\Broker\Producer:
+        lazy: true
+        arguments:
+            $container: '@service_container'
+
+    ADT\BackgroundQueue\Console\ReloadConsumersCommand:
+        tags:
+            - { name: 'console.command' }

@@ -1,12 +1,12 @@
 # Background Queue for Symfony using RabbitMQ
 
-### 1.1 Installation
+## 1.1 Installation
 
 ```
 composer require adt/background-queue-symfony
 ```
 
-### 1.2 Configuration
+## 1.2 Configuration
 
 ```php
 return [
@@ -18,16 +18,48 @@ return [
 background_queue:
 	callbacks:
 		sendEmail: ['@App\Model\Mailer', 'sendEmail']
-	notifyOnNumberOfAttempts: 5 # počet pokusů o zpracování záznamu před zalogováním
-	tempDir: %tempDir% # cesta pro uložení zámku proti vícenásobnému spuštění commandu
-	queue: general # nepovinné, název fronty, do které se ukládají a ze které se vybírají záznamy
-	connection: %database% # parametry predavane do Doctrine\Dbal\Connection
-	producer: '@ADT\BackgroundQueueSymfony\Broker\Producer' # nepovinné, callback, který publishne zprávu do brokera
-	waitingQueue: 'waiting' # nepovinné, název queue, kam ukládat záznamy, které ještě nelze zpracovat
+	notifyOnNumberOfAttempts: 5
+	tempDir: %tempDir%
+	connection: %database%
+	queue: general
 	logger: '@logger'
 ```
 
-```neon
+## 1.3 RabbitMQ (optional)
+
+### 1.3.1 Installation
+
+```
+composer require php-amqplib/rabbitmq-bundle
+```
+
+To make sure you avoid BC break when upgrading `php-amqplib/rabbitmq-bundle` in the future, add to your composer:
+
+```json
+{
+  "conflict": {
+    "php-amqplib/rabbitmq-bundle": "<2.0.0 || >=3.0.0"
+  }
+}
+```
+
+### 1.3.2 Configuration
+
+```php
+return [
+	OldSound\RabbitMqBundle\OldSoundRabbitMqBundle::class => ['all' => true]
+];
+```
+
+This line must be after `BackgroundQueueBundle` line.
+
+```yaml
+background_queue:
+	producer: '@ADT\BackgroundQueueSymfony\Broker\Producer'
+	waitingQueue: 'waiting'
+```
+
+```yaml
 old_sound_rabbit_mq:
   connections:
     default:
@@ -53,13 +85,8 @@ old_sound_rabbit_mq:
       # Consumery máme nastavené tak, že zpracují max 1 zprávu, takže nastavíme,
       # aby si jich více nezabíral.
       qos_options: {prefetch_count: 1}
-
-    waiting:
-        connection: default
-        exchange_options: {name: '%env(RABBITMQ_NAME)%', type: direct}
-        queue_options: {name: '%env(RABBITMQ_NAME)%', arguments: {'x-queue-type': ['S', 'quorum']}}
-        callback: ADT\BackgroundQueueSymfony\Broker\Consumer
-        # Consumery máme nastavené tak, že zpracují max 1 zprávu, takže nastavíme,
-        # aby si jich více nezabíral.
-        qos_options: {prefetch_count: 1}
 ```
+
+## 1.4 Documentation
+
+https://github.com/AppsDevTeam/background-queue

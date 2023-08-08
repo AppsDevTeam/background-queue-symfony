@@ -13,7 +13,7 @@ class Producer implements \ADT\BackgroundQueue\Broker\Producer
 
 	private Container $container;
 
-	/** @var Producer[] */
+	/** @var \OldSound\RabbitMqBundle\RabbitMq\Producer[] */
 	private array $producers = [];
 
 	public function __construct(Container $container)
