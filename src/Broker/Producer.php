@@ -26,7 +26,7 @@ class Producer implements \ADT\BackgroundQueue\Broker\Producer
 	 */
 	public function publish(int $id, string $queue, ?int $expiration = null): void
 	{
-		$this->doPublish($queue, $id);
+		$this->doPublish($queue, $id, $expiration);
 	}
 
 	/**
@@ -42,11 +42,11 @@ class Producer implements \ADT\BackgroundQueue\Broker\Producer
 	 */
 	private function doPublish(string $producer, $id, ?int $expiration = null)
 	{
-		$headers = [];
+		$properties = [];
 		if ($expiration) {
-			$headers['expiration'] = $expiration;
+			$properties['expiration'] = (string)   $expiration;
 		}
-		$this->getProducer($producer)->publish($id, '', $headers);
+		$this->getProducer($producer)->publish($id, '', $properties);
 	}
 
 	/**
