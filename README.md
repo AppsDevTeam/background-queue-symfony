@@ -61,6 +61,7 @@ This line must be after `BackgroundQueueBundle` line.
 background_queue:
   producer: '@ADT\BackgroundQueueSymfony\Broker\Producer'
   waitingQueue: 'waiting'
+  waitingJobExpiration: 1000
 ```
 
 ```yaml
@@ -78,7 +79,7 @@ old_sound_rabbit_mq:
     waiting:
         connection: default
         exchange_options: {name: '%env(RABBITMQ_NAME)%_waiting', type: direct}
-        queue_options: {name: '%env(RABBITMQ_NAME)%_waiting', arguments: {'x-dead-letter-exchange': ['S', %rabbitMQ.name%], 'x-message-ttl': ['I', 1000]}}
+        queue_options: {name: '%env(RABBITMQ_NAME)%_waiting', arguments: {'x-dead-letter-exchange': ['S', %rabbitMQ.name%]}}
 
   consumers:
     general:
