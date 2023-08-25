@@ -49,6 +49,9 @@ class Configuration implements ConfigurationInterface
 				->scalarNode('waitingQueue')
 					->defaultNull()
 				->end()
+				->scalarNode('waitingJobExpiration')
+					->defaultValue(1000)
+				->end()
 			->end();
 
 		return $treeBuilder;
