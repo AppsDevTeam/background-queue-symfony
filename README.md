@@ -23,73 +23,23 @@ background_queue:
   connection: %database%
   queue: general
   logger: '@logger'
+  onBeforeProcess: ['@App\Model\Database', 'switchDatabase']
+  onError: ['ADT\Utils\Guzzle', 'handleException']
+  onAfterProcess: ['@App\Model\Database', 'switchDatabaseBack']
 ```
 
 ## 1.3 RabbitMQ (optional)
 
 ### 1.3.1 Installation
 
-Because RabbitMQ is optional dependency, it doesn't check your installed version against the version with which this package was tested. That's why it's recommended to add
-
-```json
-{
-  "conflict": {
-    "php-amqplib/rabbitmq-bundle": "<2.0.0 || >=3.0.0"
-  }
-}
-```
-
-to your composer and then run:
-
-```
-composer require php-amqplib/rabbitmq-bundle
-```
-
-This make sures you avoid BC break when upgrading `php-amqplib/rabbitmq-bundle` in the future.
+How to install RabbitMQ, check https://github.com/AppsDevTeam/background-queue
 
 ### 1.3.2 Configuration
 
-```php
-return [
-    OldSound\RabbitMqBundle\OldSoundRabbitMqBundle::class => ['all' => true]
-];
-```
-
-This line must be after `BackgroundQueueBundle` line.
-
 ```yaml
 background_queue:
-  producer: '@ADT\BackgroundQueueSymfony\Broker\Producer'
-  waitingQueue: 'waiting'
+  producer: '@ADT\BackgroundQueue\Broker\AmqpLib\Producer'
   waitingJobExpiration: 1000
-```
-
-```yaml
-old_sound_rabbit_mq:
-  connections:
-    default:
-      url: '%env(RABBITMQ_URL)%'
-
-  producers:
-    general:
-      connection: default
-      exchange_options: {name: '%env(RABBITMQ_NAME)%', type: direct}
-      queue_options: {name: '%env(RABBITMQ_NAME)%', arguments: {'x-queue-type': ['S', 'quorum']}}
-
-    waiting:
-        connection: default
-        exchange_options: {name: '%env(RABBITMQ_NAME)%_waiting', type: direct}
-        queue_options: {name: '%env(RABBITMQ_NAME)%_waiting', arguments: {'x-dead-letter-exchange': ['S', %rabbitMQ.name%]}}
-
-  consumers:
-    general:
-      connection: default
-      exchange_options: {name: '%env(RABBITMQ_NAME)%', type: direct}
-      queue_options: {name: '%env(RABBITMQ_NAME)%', arguments: {'x-queue-type': ['S', 'quorum']}}
-      callback: ADT\BackgroundQueueSymfony\Broker\Consumer
-      # Consumery máme nastavené tak, že zpracují max 1 zprávu, takže nastavíme,
-      # aby si jich více nezabíral.
-      qos_options: {prefetch_count: 1}
 ```
 
 ## 1.4 Documentation

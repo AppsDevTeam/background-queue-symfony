@@ -13,12 +13,9 @@
 	"license": "MIT",
 	"require": {
 		"php": "^7.4",
-		"adt/background-queue": "^4.0",
+		"adt/background-queue": "^4.16",
 		"symfony/framework-bundle": "^4.4",
 		"symfony/proxy-manager-bridge": "^4.4"
-	},
-	"require-dev": {
-		"php-amqplib/rabbitmq-bundle": "^2.5"
 	},
 	"autoload": {
 		"psr-4": {
