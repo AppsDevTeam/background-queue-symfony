@@ -19,9 +19,10 @@ background_queue:
   callbacks:
     sendEmail: ['@App\Model\Mailer', 'sendEmail']
   notifyOnNumberOfAttempts: 5
-  tempDir: %tempDir%
-  connection: %database%
-  queue: general
+  tempDir: '%tmp_dir%'
+  locksDir: '%kernel.project_dir%/data/locks'
+  connection: '%env(DATABASE_URL)%'
+  queue: '%env(PROJECT_NAME)%'
   logger: '@logger'
   onBeforeProcess: ['@App\Model\Database', 'switchDatabase']
   onError: ['ADT\Utils\Guzzle', 'handleException']

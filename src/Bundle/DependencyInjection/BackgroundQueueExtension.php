@@ -23,19 +23,44 @@ class BackgroundQueueExtension extends Extension
 		$loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 		$loader->load('services.yaml');
 
-		foreach ($config['callbacks'] as &$callback) {
-			$callback[0] = new Reference(substr($callback[0], 1)); // removes @;
+		foreach ($config['callbacks'] as &$_callback) {
+			$_callback[0] = $this->normalizeClass($_callback[0]);
 		}
 		if ($config['producer']) {
-			$config['producer'] = new Reference(substr($config['producer'], 1)); // removes @;
+			$config['producer'] = $this->normalizeClass($config['producer']);
 			$loader->load('broker.yml');
-
 		}
 		if ($config['logger']) {
-			$config['logger'] = new Reference(substr($config['logger'], 1)); // removes @;
+			$config['logger'] = $this->normalizeClass($config['logger']);
+		}
+		if ($config['onBeforeProcess']) {
+			$config['onBeforeProcess'][0] = $this->normalizeClass($config['onBeforeProcess'][0]);
+		}
+		if ($config['onError']) {
+			$config['onBeforeProcess'][0] = $this->normalizeClass($config['onError'][0]);
+		}
+		if ($config['onAfterProcess']) {
+			$config['onBeforeProcess'][0] = $this->normalizeClass($config['onAfterProcess'][0]);
 		}
 
 		$definition = new Definition('ADT\BackgroundQueue\BackgroundQueue', [$config]);
 		$container->setDefinition('ADT\BackgroundQueue\BackgroundQueue', $definition);
+
+		$services = $container->findTaggedServiceIds('background-queue.command');
+
+		foreach ($services as $id => $tags) {
+			$definition = $container->getDefinition($id);
+
+			// Zavolejte metodu setLocksDir na každou službu
+			$definition->addMethodCall('setLocksDir', [$config['locksDir']]);
+		}
+	}
+
+	private function normalizeClass(string $class)
+	{
+		if ($class[0] === '@') {
+			$class = new Reference(substr($class, 1));
+		}
+		return $class;
 	}
 }

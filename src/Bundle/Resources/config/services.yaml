@@ -7,9 +7,12 @@ services:
     ADT\BackgroundQueue\Console\ClearFinishedCommand:
         tags:
             - { name: 'console.command' }
+            - { name: 'background-queue.command'}
     ADT\BackgroundQueue\Console\ProcessCommand:
         tags:
             - { name: 'console.command' }
+            - { name: 'background-queue.command'}
     ADT\BackgroundQueue\Console\UpdateSchemaCommand:
         tags:
             - { name: 'console.command' }
+            - { name: 'background-queue.command'}
