@@ -37,10 +37,10 @@ class BackgroundQueueExtension extends Extension
 			$config['onBeforeProcess'][0] = $this->normalizeClass($config['onBeforeProcess'][0]);
 		}
 		if ($config['onError']) {
-			$config['onBeforeProcess'][0] = $this->normalizeClass($config['onError'][0]);
+			$config['onError'][0] = $this->normalizeClass($config['onError'][0]);
 		}
 		if ($config['onAfterProcess']) {
-			$config['onBeforeProcess'][0] = $this->normalizeClass($config['onAfterProcess'][0]);
+			$config['onAfterProcess'][0] = $this->normalizeClass($config['onAfterProcess'][0]);
 		}
 
 		$definition = new Definition('ADT\BackgroundQueue\BackgroundQueue', [$config]);
